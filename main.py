@@ -24,7 +24,7 @@ mainFont = pygame.font.Font("./assets/Minecraft.ttf", 21)
 
 class Snake:
     def __init__(self):
-        self.snakeBody = [Vector2(5, 10), Vector2(4,10), Vector2(3, 10)]
+        self.snakeBody = [Vector2(0, 0), Vector2(23, 5), Vector2(0, 0)]
         self.direction = Vector2(0, 0)
         self.newBodyPart = False
     
@@ -48,7 +48,7 @@ class Snake:
         self.newBodyPart = True
     
     def reset(self):
-        self.snakeBody = [Vector2(5, 10), Vector2(4,10), Vector2(3, 10)]
+        self.snakeBody = [Vector2(8, 18), Vector2(8,19), Vector2(8, 20)]
         self.direction = Vector2(0, 0)
 
 class Food:
@@ -60,14 +60,17 @@ class Food:
         pygame.draw.rect(display, foodColor, foodRect)
 
     def randomize(self):
-        self.x = random.randint(0, cellNumber - 1)
-        self.y = random.randint(0, cellNumber - 11)
+        self.x = random.randint(0, cellNumber/2 - 1)
+        self.y = random.randint(0, cellNumber - 1)
         self.pos = pygame.Vector2(self.x, self.y)
+
 
 class Game:
     def __init__(self):
         self.snake = Snake()
         self.food = Food()
+        self.running, self.playing = True, False
+        self.START_KEY = False
     
     def isCollide(self):
         if self.food.pos == self.snake.snakeBody[0]:
@@ -85,31 +88,26 @@ class Game:
         self.isEatenSelf()
 
     def draw(self):
-        self.drawBackground()
+        display.fill(backgroundColor)        
         self.food.draw()
         self.snake.draw()
-        self.score()
+        self.drawText(str(len(self.snake.snakeBody) - 3), 10, 10)
 
     def isOutside(self):
-        if not 0 <= self.snake.snakeBody[0].x < cellNumber or not 0 <= self.snake.snakeBody[0].y < cellNumber - 10: 
-            self.gameOver()
+        if not 0 <= self.snake.snakeBody[0].x < cellNumber/2 or not 0 <= self.snake.snakeBody[0].y < cellNumber: 
+            self.snake.reset()
     
     def isEatenSelf(self):
         for part in self.snake.snakeBody[1:]:
             if part == self.snake.snakeBody[0]:
-                self.gameOver()
-
-    def gameOver(self):
-        self.snake.reset()
+                self.snake.reset()        
     
-    def score(self):
-        score = str(len(self.snake.snakeBody) - 3)
-        scoreSurface = mainFont.render(score, False, objectColor)
-        scoreSurfaceRect = scoreSurface.get_rect(center = (int(cellWidth/2 + 5), int(cellWidth/2 + 5)))
-        display.blit(scoreSurface, scoreSurfaceRect)
+    def drawText(self, text, x, y ,size = 20):
+        gameFont = pygame.font.Font("./assets/Minecraft.ttf", size)
+        textSurface = gameFont.render(text, False, objectColor)
+        textRect = textSurface.get_rect(center = (int(x), int(y)))
+        display.blit(textSurface, textRect)  
 
-    def drawBackground(self):
-        display.fill(backgroundColor)
 
 # Naming the game
 pygame.display.set_caption("Snake Game")
@@ -122,29 +120,41 @@ pygame.time.set_timer(timeEvent, 100)
 game = Game()
 
 # Snake game loop
-while True:
-    # Game control and user input
+while game.running:
+    display.fill(backgroundColor)
+    game.drawText("Click to start", displayWidth/2, displayHeight/2)
+    pygame.display.update()
+
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == timeEvent:
-            game.update()
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                if game.snake.direction.y != 1:
-                    game.snake.direction = Vector2(0, -1) 
-            if event.key == pygame.K_DOWN:
-                if game.snake.direction.y != -1:
-                    game.snake.direction = Vector2(0, 1)
-            if event.key == pygame.K_RIGHT:
-                if game.snake.direction.x != -1:
-                    game.snake.direction = Vector2(1, 0)
-            if event.key == pygame.K_LEFT:
-                if game.snake.direction.x != 1:
-                    game.snake.direction = Vector2(-1, 0)  
-    
-    # Display updating the game
-    game.draw()
-    pygame.display.flip()
-    frameRates.tick(60)
+            if event.key == pygame.K_SPACE:
+                game.playing = True
+
+    while game.playing:
+        # Game control and user input
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == timeEvent:
+                game.update()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    game.playing = False
+                if event.key == pygame.K_UP:
+                    if game.snake.direction.y != 1:
+                        game.snake.direction = Vector2(0, -1) 
+                if event.key == pygame.K_DOWN:
+                    if game.snake.direction.y != -1:
+                        game.snake.direction = Vector2(0, 1)
+                if event.key == pygame.K_RIGHT:
+                    if game.snake.direction.x != -1:
+                        game.snake.direction = Vector2(1, 0)
+                if event.key == pygame.K_LEFT:
+                    if game.snake.direction.x != 1:
+                        game.snake.direction = Vector2(-1, 0)  
+        
+        # Display updating the game
+        game.draw()
+        pygame.display.flip()
+        frameRates.tick(60)
