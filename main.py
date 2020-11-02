@@ -1,14 +1,13 @@
 # Modules 
 import pygame, sys, random
 from pygame.math import Vector2
-from globals import * 
 
 # Global variables 
 # The display is a grid with 10px cell size
-cellWidth = 20
-cellNumber = 30
-displayWidth = cellNumber * cellWidth
-displayHeight = (cellNumber - 10) * cellWidth
+cellWidth = 15
+cellNumber = 34
+displayWidth = cellNumber/2 * cellWidth
+displayHeight = cellNumber * cellWidth
 
 # Color Palette
 objectColor = (245, 245, 245)
@@ -18,10 +17,10 @@ foodColor = (200, 30, 30)
 # init all pygame modules 
 pygame.init()
 frameRates = pygame.time.Clock()
-display = pygame.display.set_mode((displayWidth, displayHeight))
+display = pygame.display.set_mode((int(displayWidth), int(displayHeight)))
 
 # Game font
-mainFont = pygame.font.Font("MinecraftTen-VGORe.ttf", 21)
+mainFont = pygame.font.Font("./assets/Minecraft.ttf", 21)
 
 class Snake:
     def __init__(self):
