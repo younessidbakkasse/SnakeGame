@@ -1,4 +1,6 @@
-from objects import *
+from globals import *
+from snake import Snake
+from food import Food
 
 # game manager class
 class Game:
