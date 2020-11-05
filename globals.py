@@ -4,7 +4,7 @@ from pygame.math import Vector2
 
 
 # Global variables 
-# The display is a grid with 10px cell size
+# The display is a grid with 15px cell size
 cellWidth = 15
 cellNumber = 34
 displayWidth = cellNumber/2 * cellWidth
@@ -15,7 +15,7 @@ objectColor = (245, 245, 245)
 backgroundColor = (0, 190, 105)
 foodColor = (200, 30, 30)
 
-# init all pygame modules 
+# Init all pygame modules and create a window
 pygame.init()
 frameRates = pygame.time.Clock()
 display = pygame.display.set_mode((int(displayWidth), int(displayHeight)))
